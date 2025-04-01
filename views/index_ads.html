@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeluguAI-style AI Chat with Ads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f3f3f3;
+        }
+        
+        .message-box {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .user-message {
+            background-color: #181818;
+            border-left: 3px solid #4f46e5;
+        }
+        
+        .ai-message {
+            background-color: #1a1a1a;
+            border-left: 3px solid #10b981;
+        }
+        
+        .input-box {
+            background-color: #181818;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #aaa;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+        
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .ad-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ad-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(0,0,0,0.3);
+            color: #aaa;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        .ad-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .ad-text {
+            padding: 8px 0;
+        }
+        
+        .ad-button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .ad-image {
+            width: 100%;
+            height: 120px;
+            background-color: #333;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <!-- Header with premium ad -->
+    <header class="py-4 px-6 border-b border-gray-800 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-md bg-purple-600 flex items-center justify-center">
+                <i class="fas fa-robot text-white"></i>
+            </div>
+            <h1 class="text-xl font-semibold">TeluguAI</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="ad-container h-10 hidden md:flex items-center px-3">
+                <div class="ad-label">Ad</div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-2">
+                        <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-crown text-xs text-white"></i>
+                        </div>
+                    </div>
+                    <div class="text-xs">
+                        Upgrade to <span class="font-medium text-purple-400">TeluguAI Pro</span> for better answers!
+                    </div>
+                </div>
+            </div>
+            <button class="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Chat Area -->
+    <main class="flex-1 overflow-y-auto p-6" id="chat-container">
+        <!-- Suggestions (shown when no messages) -->
+        <div id="suggestions" class="max-w-4xl mx-auto">
+            <!-- Banner ad at top of suggestions -->
+            <div class="ad-container mb-8">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-content">
+                    <div class="ad-image">
+                        [Product Image]
+                    </div>
+                    <div class="ad-text">
+                        <h3 class="font-medium text-sm">Boost your productivity with AI Tools</h3>
+                        <p class="text-xs text-gray-400 mt-1">Discover the best AI applications for your workflow</p>
+                    </div>
+                    <a href="#" class="ad-button">Learn More</a>
+                </div>
+            </div>
+            
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold mb-2">స్వాగతం</h2>
+                <p class="text-gray-400">How can I help you today? </p>
+                  <p class = "text-gray-400"> Ask anything</p>
+            </div>
+            
+            <div class="suggestions-grid mb-8">
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఒక కథ చెప్పు</h3>
+                    <p class="text-sm text-gray-400">Tell me a story</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఒక జోక్ చెప్పు</h3>
+                    <p class="text-sm text-gray-400">Tell me a joke</p>
+                </div>
+                <!-- Sidebar ad replacement in grid -->
+                <div class="p-4 rounded-lg ad-container col-span-1 row-span-3 hidden md:block">
+                    <div class="ad-label">Advertisement</div>
+                    <div class="ad-content">
+                        <div class="ad-image">
+                            [Sponsor Logo]
+                        </div>
+                        <div class="ad-text">
+                            <h3 class="font-medium text-sm">Try our AI-powered Search</h3>
+                            <p class="text-xs text-gray-400 mt-1">Get instant answers to complex questions</p>
+                        </div>
+                        <a href="#" class="ad-button">Try Now</a>
+                    </div>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఈరోజు వార్తలు ఏమిటి?</h3>
+                    <p class="text-sm text-gray-400">what is today's news?</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఈరోజు వాతావరణం ఎలా ఉంది?</h3>
+                    <p class="text-sm text-gray-400">what is today's weather?</p>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500 mb-8">
+                <p>TeluguAI can make mistakes. Consider checking important information.</p>
+            </div>
+            
+            <!-- Bottom banner ad -->
+            <div class="ad-container max-w-2xl mx-auto">
+                <div class="ad-label">Sponsored</div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="ad-image w-20"></div>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="font-medium text-sm">Join our Developer Program</h3>
+                        <p class="text-xs text-gray-400 mt-1">Build applications with our API</p>
+                        <a href="#" class="ad-button inline-block mt-2">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messages will be added here dynamically -->
+        <div id="messages" class="space-y-6 hidden"></div>
+        
+        <!-- In-chat ad that appears after messages -->
+        <div id="in-chat-ad" class="hidden max-w-4xl mx-auto mt-8">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-content">
+                    <div class="ad-image">
+                        [Related Product]
+                    </div>
+                    <div class="ad-text">
+                        <h3 class="font-medium text-sm">Enhance your experience</h3>
+                        <p class="text-xs text-gray-400 mt-1">Other users who asked this also found these tools helpful</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <a href="#" class="ad-button text-center">Option 1</a>
+                        <a href="#" class="ad-button text-center">Option 2</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Input Area with small ad -->
+    <div class="p-4 border-t border-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <!-- Small text ad above input -->
+            <div class="ad-container mb-3 p-2 text-center">
+                <div class="ad-label">Ad</div>
+                <div class="text-xs">
+                    Some of our answers contain <span class="text-purple-400">sponsored suggestions</span>. <a href="#" class="underline">Learn more</a>
+                </div>
+            </div>
+            
+            <div class="relative flex">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Ask anything..." 
+                    class="w-full py-4 px-5 rounded-full input-box border border-gray-800 focus:border-purple-600 focus:outline-none pr-14"
+                >
+                <button id="send-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-center mt-3 text-xs text-gray-500 space-x-4">
+                <span>TeluguAI v1.0</span>
+                <span>Latest update: March 2025</span>
+                <button class="text-purple-400 hover:text-purple-300">Privacy</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const suggestionsDiv = document.getElementById('suggestions');
+            const suggestionCards = document.querySelectorAll('.suggestions-grid > div');
+            const inChatAd = document.getElementById('in-chat-ad');
+            let messageCount = 0;
+            
+            // Sample AI responses
+            const sampleResponses = {
+                "hi": "Hello there! How can I assist you today?",
+                "how are you": "I'm just a computer program, so I don't have feelings, but thanks for asking! How can I help you?",
+                "who created you": "I was created by a team of AI researchers and engineers to be a helpful assistant.",
+                "what can you do": "I can answer questions, explain concepts, help with coding, suggest ideas, and much more. What would you like to know?"
+            };
+            
+            // Sample sponsored answers (some responses will include ads)
+            const sponsoredAnswers = [
+                "This response is brought to you by our partner <span class='text-purple-400'>TechSolutions</span>. Check out their AI tools at example.com",
+                "For more detailed analysis, you might want to try <span class='text-purple-400'>DataAI Pro</span>, our recommended analytics platform.",
+                "Sponsored suggestion: Similar questions are often answered more comprehensively with <span class='text-purple-400'>ExpertAI Premium</span>."
+            ];
+            
+            // Add message to chat
+            function addMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-box rounded-lg p-4 ${isUser ? 'user-message' : 'ai-message'}`;
+                
+                // Message header
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex items-center mb-2';
+                
+                const iconDiv = document.createElement('div');
+                iconDiv.className = `w-6 h-6 rounded-full flex items-center justify-center mr-3 ${isUser ? 'bg-gray-700' : 'bg-green-600'}`;
+                
+                const icon = document.createElement('i');
+                icon.className = `fas ${isUser ? 'fa-user text-xs' : 'fa-robot'} text-white text-xs`;
+                iconDiv.appendChild(icon);
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'font-medium';
+                nameSpan.textContent = isUser ? 'You' : 'PerplexAI';
+                
+                headerDiv.appendChild(iconDiv);
+                headerDiv.appendChild(nameSpan);
+                
+                // Message content
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'text-gray-100';
+                
+                if (isUser) {
+                    contentDiv.textContent = content;
+                } else {
+                    // Simulate typing for AI responses
+                    contentDiv.className += ' typing-indicator';
+                    contentDiv.innerHTML = '<span></span><span></span><span></span>';
+                    
+                    // After a delay, remove typing indicator and show message
+                    setTimeout(() => {
+                        contentDiv.className = 'text-gray-100';
+                        
+                        // Occasionally include a sponsored message
+                        if (!isUser && Math.random() > 0.7) {
+                            const sponsoredIndex = Math.floor(Math.random() * sponsoredAnswers.length);
+                            contentDiv.innerHTML = content + '<div class="mt-4 text-sm p-2 bg-gray-800 rounded border-l-2 border-purple-500">' + 
+                                sponsoredAnswers[sponsoredIndex] + '</div>';
+                        } else {
+                            contentDiv.textContent = content;
+                        }
+                    }, 1000 + Math.random() * 1000);
+                }
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+                
+                messagesContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            // Process user input
+            function processInput() {
+                const text = userInput.value.trim();
+                if (!text) return;
+                
+                // Hide suggestions when first message is sent
+                if (messagesContainer.classList.contains('hidden')) {
+                    suggestionsDiv.classList.add('hidden');
+                    messagesContainer.classList.remove('hidden');
+                }
+                
+                addMessage(text, true);
+                userInput.value = '';
+                
+                // Simple response logic
+                const lowerText = text.toLowerCase();
+                let response;
+                
+                if (sampleResponses[lowerText]) {
+                    response = sampleResponses[lowerText];
+                } else {
+                    response = "Interesting question! Here's what I can tell you about that: " + 
+                    "[" + text + "] is a fascinating topic. While my knowledge is limited, I can say that this relates " + 
+                    "to many important aspects of current technology and research. Would you like me to elaborate " + 
+                    "on any specific part of this subject?";
+                }
+                
+                // Increment message counter and show ad after 3 messages
+                messageCount++;
+                if (messageCount >= 3) {
+                    setTimeout(() => {
+                        inChatAd.classList.remove('hidden');
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                        messageCount = 0; // Reset counter
+                    }, 1500);
+                }
+                
+                setTimeout(() => {
+                    addMessage(response, false);
+                }, 500);
+            }
+            
+            // Event listeners
+            sendBtn.addEventListener('click', processInput);
+            
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    processInput();
+                }
+            });
+            
+            // Add click handlers for suggestion cards
+            suggestionCards.forEach(card => {
+                if (!card.classList.contains('ad-container')) {
+                    card.addEventListener('click', function() {
+                        userInput.value = card.querySelector('h3').textContent;
+                        userInput.focus();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

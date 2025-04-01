@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeluguAI-style AI Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f3f3f3;
+        }
+        
+        .message-box {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .user-message {
+            background-color: #181818;
+            border-left: 3px solid #4f46e5;
+        }
+        
+        .ai-message {
+            background-color: #1a1a1a;
+            border-left: 3px solid #10b981;
+        }
+        
+        .input-box {
+            background-color: #181818;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #aaa;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+        
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <!-- Header -->
+    <header class="py-4 px-6 border-b border-gray-800 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-md bg-purple-600 flex items-center justify-center">
+                <i class="fas fa-robot text-white"></i>
+            </div>
+            <h1 class="text-xl font-semibold">TeluguAI</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Chat Area -->
+    <main class="flex-1 overflow-y-auto p-6" id="chat-container">
+        <!-- Suggestions (shown when no messages) -->
+        <div id="suggestions" class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold mb-2">స్వాగతం</h2>
+                <p class="text-gray-400">How can I help you today? </p>
+                  <p class = "text-gray-400"> Ask anything</p>
+            </div>
+            
+            <div class="suggestions-grid mb-8">
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఒక కథ చెప్పు</h3>
+                    <p class="text-sm text-gray-400">Tell me a story</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఒక జోక్ చెప్పు</h3>
+                    <p class="text-sm text-gray-400">Tell me a joke</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఈరోజు వార్తలు ఏమిటి?</h3>
+                    <p class="text-sm text-gray-400">what is today's news?</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-purple-600 transition-colors cursor-pointer">
+                    <h3 class="font-medium mb-2">ఈరోజు వాతావరణం ఎలా ఉంది?</h3>
+                    <p class="text-sm text-gray-400">what is today's weather?</p>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500">
+                <p>TeluguAI can make mistakes. Consider checking important information.</p>
+            </div>
+        </div>
+        
+        <!-- Messages will be added here dynamically -->
+        <div id="messages" class="space-y-6 hidden"></div>
+    </main>
+    
+    <!-- Input Area -->
+    <div class="p-4 border-t border-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="relative flex">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Ask anything..." 
+                    class="w-full py-4 px-5 rounded-full input-box border border-gray-800 focus:border-purple-600 focus:outline-none pr-14"
+                >
+                <button id="send-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-center mt-3 text-xs text-gray-500 space-x-4">
+                <span>TeluguAI v1.0</span>
+                <span>Latest update: March 2025</span>
+                <button class="text-purple-400 hover:text-purple-300">Privacy</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const suggestionsDiv = document.getElementById('suggestions');
+            const suggestionCards = document.querySelectorAll('.suggestions-grid > div');
+            
+            // Sample AI responses
+            const sampleResponses = {
+                "hi": "Hello there! How can I assist you today?",
+                "how are you": "I'm just a computer program, so I don't have feelings, but thanks for asking! How can I help you?",
+                "who created you": "I was created by a team of AI researchers and engineers to be a helpful assistant.",
+                "what can you do": "I can answer questions, explain concepts, help with coding, suggest ideas, and much more. What would you like to know?"
+            };
+            
+            // Add message to chat
+            function addMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-box rounded-lg p-4 ${isUser ? 'user-message' : 'ai-message'}`;
+                
+                // Message header
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex items-center mb-2';
+                
+                const iconDiv = document.createElement('div');
+                iconDiv.className = `w-6 h-6 rounded-full flex items-center justify-center mr-3 ${isUser ? 'bg-gray-700' : 'bg-green-600'}`;
+                
+                const icon = document.createElement('i');
+                icon.className = `fas ${isUser ? 'fa-user text-xs' : 'fa-robot'} text-white text-xs`;
+                iconDiv.appendChild(icon);
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'font-medium';
+                nameSpan.textContent = isUser ? 'You' : 'TeluguAI';
+                
+                headerDiv.appendChild(iconDiv);
+                headerDiv.appendChild(nameSpan);
+                
+                // Message content
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'text-gray-100';
+                
+                if (isUser) {
+                    contentDiv.textContent = content;
+                } else {
+                    // Simulate typing for AI responses
+                    contentDiv.className += ' typing-indicator';
+                    contentDiv.innerHTML = '<span></span><span></span><span></span>';
+                    
+                    // After a delay, remove typing indicator and show message
+                    setTimeout(() => {
+                        contentDiv.className = 'text-gray-100';
+                        contentDiv.textContent = content;
+                    }, 1000 + Math.random() * 1000);
+                }
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+                
+                messagesContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            // Process user input
+            function processInput() {
+                const text = userInput.value.trim();
+                if (!text) return;
+                
+                // Hide suggestions when first message is sent
+                if (!messagesContainer.classList.contains('hidden')) {
+                    suggestionsDiv.classList.add('hidden');
+                }
+                
+                messagesContainer.classList.remove('hidden');
+                addMessage(text, true);
+                userInput.value = '';
+                
+                // Simple response logic
+                const lowerText = text.toLowerCase();
+                let response;
+                
+                if (sampleResponses[lowerText]) {
+                    response = sampleResponses[lowerText];
+                } else {
+                    response = "Interesting question! Here's what I can tell you about that: " + 
+                    "[" + text + "] is a fascinating topic. While my knowledge is limited, I can say that this relates " + 
+                    "to many important aspects of current technology and research. Would you like me to elaborate " + 
+                    "on any specific part of this subject?";
+                }
+                
+                setTimeout(() => {
+                    addMessage(response, false);
+                }, 500);
+            }
+            
+            // Event listeners
+            sendBtn.addEventListener('click', processInput);
+            
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    processInput();
+                }
+            });
+            
+            // Add click handlers for suggestion cards
+            suggestionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    userInput.value = card.querySelector('h3').textContent;
+                    userInput.focus();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

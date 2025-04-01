@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeluguAI - Smart AI Assistant for Telugu Speakers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --pro-color:#805ad5;
+            --pro-dark: #7351bd;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f3f3f3;
+            scroll-behavior: smooth;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #4f46e5, #c471ed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        }
+        
+        .section-padding {
+            padding: 5rem 1.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-pro {
+            background-color: var(--pro-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pro:hover {
+            background-color: var(--pro-dark);
+            transform: translateY(-2px);
+        }
+        .feature-card {
+            background-color: #111111;
+            border-radius: 12px;
+            border: 1px solid #222;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .testimonial-card {
+            background-color: #111111;
+            border-radius: 12px;
+            border: 1px solid #222;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .hero-glow {
+            box-shadow: 0 0 50px rgba(79, 70, 229, 0.3);
+        }
+        
+        .typewriter-text {
+            border-right: 2px solid var(--primary-color);
+            animation: blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary-color) }
+        }
+        
+        .pricing-card {
+            background-color: #111111;
+            border-radius: 12px;
+            border: 1px solid #222;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .pricing-card.popular {
+            border: 1px solid var(--primary-color);
+        }
+        
+        .pricing-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #222;
+        }
+        
+        .faq-question {
+            transition: color 0.2s ease;
+        }
+        
+        .faq-question:hover {
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .footer-link {
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Animation for floating elements */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.5s;
+        }
+        
+        .delay-2 {
+            animation-delay: 1s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-[#0a0a0a] border-b border-[#222] sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <a href="#" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-lg bg-[#4f46e5] flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold">తెలుగు<span class="gradient-text">AI</span></span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#how-it-works" class="nav-link">How It Works</a>
+                    <a href="#pricing" class="nav-link">Pricing</a>
+                    <a href="#faq" class="nav-link">FAQ</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/views/index_ads_settings.html" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium hover:shadow-lg">Get Started For Free</a>
+                    <button class="md:hidden text-gray-400 hover:text-white focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="section-padding">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                        The Smart <span class="gradient-text">AI Assistant</span><br>
+                        for Telugu Speakers
+                    </h1>
+                    
+                    <p class="text-lg text-gray-400 mb-8 max-w-lg">
+                        TeluguAI helps you communicate, learn, and get things done in Telugu with natural language processing powered by artificial intelligence.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-8">
+                        <a href="/views/login.html" class="btn-primary px-8 py-3 rounded-lg font-medium text-center">
+                            Start For Free
+                        </a>
+                        <a href="/views/upgrade_pro.html" class="btn-pro px-8 py-3 rounded-lg font-medium text-center">
+                            <i class="fas fa-crown text-xs text-white"></i> Upgrade to Pro
+                        </a>
+                        <a href="/views/index_ads.html" class="px-8 py-3 rounded-lg font-medium border border-[#222] hover:bg-[#111] text-center">
+                            See Live Demo
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative max-w-md w-full">
+                        <div class="absolute -top-8 -left-8 w-32 h-32 bg-blue-500 rounded-full filter blur-3xl opacity-20"></div>
+                        <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-purple-500 rounded-full filter blur-3xl opacity-20"></div>
+                        <div class="relative bg-[#111] border border-[#222] rounded-xl overflow-hidden hero-glow">
+                            <div class="p-4 border-b border-[#222] bg-[#181818]">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    <div class="ml-2 text-xs text-gray-400">TeluguAI Chat</div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex mb-4">
+                                    <div class="w-10 h-10 rounded-full bg-[#222] flex items-center justify-center mr-3">
+                                        <i class="fas fa-robot text-[#4f46e5]"></i>
+                                    </div>
+                                    <div class="bg-[#222] rounded-lg p-3 max-w-[80%]">
+                                        <div class="text-sm text-grayThe current code is: -300">
+                                            Hello! I'm your Telugu AI assistant. How can I help you today?
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end mb-4">
+                                    <div class="bg-[#4f46e5] rounded-lg p-3 max-w-[80%]">
+                                        <div class="text-sm text-white">
+                                            నాకు ఆంగ్లంలో ఉన్న ఒక డాక్యుమెంట్‌ను తెలుగులోకి అనువదించడంలో సహాయం చేయగలరా?
+                                        </div>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-[#222] flex items-center justify-center ml-3">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-10 h-10 rounded-full bg-[#222] flex items-center justify-center mr-3">
+                                        <i class="fas fa-robot text-[#4f46e5]"></i>
+                                    </div>
+                                    <div class="bg-[#222] rounded-lg p-3 max-w-[80%]">
+                                        <div class="text-sm text-gray-300">
+                                            అవును! దయచేసి మీ డాక్యుమెంట్‌ను అప్‌లోడ్ చేయండి లేదా పాఠ్యాన్ని ఇక్కడే పేస్ట్ చేయండి. నేను తెలుగులోకి ఖచ్చితమైన అనువాదాన్ని అందిస్తాను.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex items-center border-t border-[#222] pt-4">
+                                    <input type="text" placeholder="Type your message..." class="flex-1 bg-[#181818] border border-[#222] rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4f46e5]">
+                                    <button class="ml-2 bg-[#4f46e5] rounded-lg p-2">
+                                        <i class="fas fa-paper-plane text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Powerful Features Designed for You</h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">TeluguAI comes packed with features that make communication and productivity seamless in Telugu</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-language text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Real-time Translation</h3>
+                    <p class="text-gray-400">Translate between Telugu and 100+ languages instantly with our advanced AI technology.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-comment-dots text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Natural Conversations</h3>
+                    <p class="text-gray-400">Engage in human-like conversations in Telugu on any topic you choose.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-file-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Content Creation</h3>
+                    <p class="text-gray-400">Generate high-quality Telugu content for blogs, emails, and social media.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-microphone-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Voice Assistant</h3>
+                    <p class="text-gray-400">Speak naturally in Telugu and get accurate responses through our voice interface.</p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Context Awareness</h3>
+                    <p class="text-gray-400">Our AI remembers conversation context for more meaningful interactions.</p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card p-6">
+                    <div class="w-12 h-12 rounded-lg bg-[#4f46e5] flex items-center justify-center mb-4">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Language Learning</h3>
+                    <p class="text-gray-400">Improve your Telugu with personalized lessons and pronunciation guides.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="/views/feature.html" class="btn-primary px-8 py-3 rounded-lg font-medium inline-block">
+                    See All Features
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-padding bg-[#111]">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">How TeluguAI Works</h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">Get started in minutes and experience the power of AI in Telugu</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-[#4f46e5] flex items-center justify-center mb-4 text-white font-bold text-xl">1</div>
+                    <a href="/views/upgrade_pro.html"><h3 class="text-xl font-bold mb-2">Create Your Account</h3></a>
+                    <p class="text-gray-400">Sign up for free and get instant access to our AI assistant.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-[#4f46e5] flex items-center justify-center mb-4 text-white font-bold text-xl">2</div>
+                    <h3 class="text-xl font-bold mb-2">Set Your Preferences</h3>
+                    <p class="text-gray-400">Choose your preferred dialect and customization options.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-[#4f46e5] flex items-center justify-center mb-4 text-white font-bold text-xl">3</div>
+                    <h3 class="text-xl font-bold mb-2">Start Interacting</h3>
+                    <p class="text-gray-400">Begin chatting, translating, or creating content in Telugu.</p>
+                </div>
+            </div>
+            
+            <div class="gradient-bg rounded-xl p-6 md:p-8 border border-[#222]">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <div class="p-4 inline-block rounded-lg bg-[#0a0a0a] mb-4">
+                            <i class="fas fa-play text-[#4f46e5] text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Want to see it in action?</h3>
+                        <p class="text-gray-400 mb-4">Watch our 2-minute demo video to see how TeluguAI can transform your Telugu language experience.</p>
+                        <a href="#demo" class="btn-primary px-6 py-2 rounded-lg text-sm font-medium inline-block">
+                            Watch Demo
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative w-full max-w-md">
+                            <div class="aspect-w-16 aspect-h-9 bg-[#222] rounded-lg overflow-hidden">
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-play text-4xl text-[#4f46e5]"></i>
+                                </div>
+                            </div>
+                            <div class="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-[#4f46e5] flex items-center justify-center">
+                                <i class="fas fa-star text-xs text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section-padding">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">Choose the plan that's right for your needs</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Basic Plan -->
+                <div class="pricing-card p-6">
+                    <h3 class="text-xl font-bold mb-2">Basic</h3>
+                    <p class="text-gray-400 mb-6">Ideal for personal use and getting started</p>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">$0</span>
+                        <span class="text-gray-400">/month</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>50 messages/day</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Basic translation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>English interface</span>
+                        </li>
+                        <li class="flex items-center text-gray-500">
+                            <i class="fas fa-times-circle text-gray-500 mr-2"></i>
+                            <span>No voice input</span>
+                        </li>
+                        <li class="flex items-center text-gray-500">
+                            <i class="fas fa-times-circle text-gray-500 mr-2"></i>
+                            <span>Standard response speed</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="/views/login.html" class="btn-primary px-6 py-3 rounded-lg font-medium w-full text-center block">
+                        Get Started
+                    </a>
+                </div>
+                
+                <!-- Pro Plan -->
+                <div class="pricing-card p-6 relative">
+                    <h3 class="text-xl font-bold mb-2">Pro</h3>
+                    <p class="text-gray-400 mb-6">Perfect for professionals and regular users</p>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">$4.99</span>
+                        <span class="text-gray-400">/month</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>500 messages/day</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Advanced translation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Telugu interface available</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Voice input & output</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Faster response speed</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="/views/signup.html" class="btn-pro px-6 py-3 rounded-lg font-medium w-full text-center block">
+                        Try Free
+                    </a>
+                </div>
+                
+                <!-- Enterprise Plan -->
+                <div class="pricing-card p-6">
+                    <h3 class="text-xl font-bold mb-2">Enterprise</h3>
+                    <p class="text-gray-400 mb-6">For businesses and high-volume users</p>
+                    
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">$9.99</span>
+                        <span class="text-gray-400">/month</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Unlimited messages</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Premium translation quality</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Custom interface options</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Advanced voice features</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span>Priority support & API access</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="/contact" class="btn-primary px-6 py-3 rounded-lg font-medium w-full text-center block">
+                        Contact Sales
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt5;0&#125; 
+
+Let me complete the document. The content was cut off, so I'll provide the complete HTML file starting from where it left off:
+
+```html
+            <div class="text-center mt-12">
+                <p class="text-sm text-gray-400 mb-2">Need something different?</p>
+                <a href="/contact" class="text-[#4f46e5] hover:underline font-medium">Contact our sales team</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section id="faq" class="section-padding">
+        <div class="container mx-auto max-w-4xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">Find answers to common questions about TeluguAI</p>
+            </div>
+            
+            <div class="divide-y divide-[#222]">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item py-6">
+                    <button class="faq-question w-full flex justify-between items-center text-left">
+                        <span class="text-lg font-medium">How is TeluguAI different from other translation tools?</span>
+                        <i class="fas fa-chevron-down text-[#4f46e5] transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-gray-400 mt-2">TeluguAI focuses specifically on Telugu language contexts and dialects, ensuring more accurate and natural translations than general tools. Our AI understands cultural nuances and provides context-aware suggestions.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="faq-item py-6">
+                    <button class="faq-question w-full flex justify-between items-center text-left">
+                        <span class="text-lg font-medium">Is my data secure with TeluguAI?</span>
+                        <i class="fas fa-chevron-down text-[#4f46e5] transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-gray-400 mt-2">Absolutely. We use end-to-end encryption for all communications and never store your personal data without consent. You can review our privacy policy for detailed information on data handling.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="faq-item py-6">
+                    <button class="faq-question w-full flex justifyBetween items-center text-left">
+                        <span class="text-lg font-medium">Which Telugu dialects are supported?</span>
+                        <i class="fas fa-chevron-down text-[#4f46e5] transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-gray-400 mt-2">We currently support standard Telugu as well as regional variations from Hyderabad, Vijayawada, Guntur, and other major Telugu-speaking regions. Our team is constantly working to add more dialect support.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="faq-item py-6">
+                    <button class="faq-question w-full flex justify-between items-center text-left">
+                        <span class="text-lg font-medium">Can I use TeluguAI for commercial purposes?</span>
+                        <i class="fas fa-chevron-down text-[#4f46e5] transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-gray-400 mt-2">Yes! Our Pro and Enterprise plans allow commercial use. If you need high-volume translations or API access, our Enterprise plan offers the best options for business needs.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 5 -->
+                <div class="faq-item py-6">
+                    <button class="faq-question w-full flex justify-between items-center text-left">
+                        <span class="text-lg font-medium">How can I cancel my subscription?</span>
+                        <i class="fas fa-chevron-down text-[#4f46e5] transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-gray-400 mt-2">You can cancel anytime from your account settings. We don't lock you into long-term contracts, and you'll retain access until the end of your current billing period.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-400 mb-2">Still have questions?</p>
+                <a href="/contact" class="btn-primary px-6 py-3 rounded-lg font-medium inline-block">
+                    Contact Support
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding bg-[#111] border-t border-[#222]">
+        <div class="container mx-auto">
+            <div class="gradient-bg rounded-xl p-8 md:p-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 max-w-3xl mx-auto">Ready to experience TeluguAI for yourself?</h2>
+                <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">Join thousands of satisfied users who communicate seamlessly in Telugu with our AI assistant</p>
+                
+                <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <a href="/views/login.html" class="btn-primary px-8 py-3 rounded-lg font-medium">
+                        Start Free
+                    </a>
+                    <a href="/views/chat.html" class="px-8 py-3 rounded-lg font-medium border border-[#222] bg-[#0a0a0a] hover:bg-[#111]">
+                        Live Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0a0a] border-t border-[#222] py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">TeluguAI</h4>
+                    <p class="text-gray-400 text-sm mb-4">The smart AI assistant designed specifically for Telugu speakers and learners.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-[#4f46e5]">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#4f46e5]">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#4f46e5]">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#4f46e5]">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="footer-link text-gray-400 text-sm">Features</a></li>
+                        <li><a href="#pricing" class="footer-link text-gray-400 text-sm">Pricing</a></li>
+                        <li><a href="#testimonials" class="footer-link text-gray-400 text-sm">Testimonials</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">About Us</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Careers</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Blog</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#faq" class="footer-link text-gray-400 text-sm">FAQ</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Contact Us</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Privacy Policy</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 text-sm">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-[#222] flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2023 TeluguAI. All rights reserved.</p>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-[#4f46e5] text-sm">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-[#4f46e5] text-sm">Terms of Service</a>
+                    <a href="#" class="text-gray-500 hover:text-[#4f46e5] text-sm">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle (placeholder functionality)
+        document.querySelector('nav button').addEventListener('click', function() {
+            alert('Mobile menu would open here');
+        });
+        
+        // FAQ accordion functionality
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.closest('.faq-item');
+                const answer = faqItem.querySelector('.faq-answer');
+                const icon = button.querySelector('i');
+                
+                // Toggle answer visibility
+                const isOpen = answer.style.maxHeight;
+                answer.style.maxHeight = isOpen ? null : answer.scrollHeight + 'px';
+                
+                // Rotate icon
+                icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Typewriter effect for hero section (optional)
+        const typewriterTexts = [
+            "AI Assistant",
+            "Translation Tool",
+            "Writing Partner",
+            "Language Tutor"
+        ];
+        
+        let currentText = 0;
+        let currentChar = 0;
+        let isDeleting = false;
+        let isEnd = false;
+        const typewriterElement = document.querySelector('.gradient-text');
+        
+        function typeWriter() {
+            const speed = 100;
+            const fullText = typewriterTexts[currentText];
+            
+            if(isDeleting) {
+                if(currentChar > 0) {
+                    typewriterElement.textContent = fullText.substring(0, currentChar - 1);
+                    currentChar--;
+                    setTimeout(typeWriter, speed / 2);
+                } else {
+                    isDeleting = false;
+                    currentText = (currentText + 1) % typewriterTexts.length;
+                    setTimeout(typeWriter, speed);
+                }
+            } else {
+                if(currentChar < fullText.length) {
+                    typewriterElement.textContent = fullText.substring(0, currentChar + 1);
+                    currentChar++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    isEnd = true;
+                    setTimeout(() => {
+                        isDeleting = true;
+                        isEnd = false;
+                        setTimeout(typeWriter, 2000);
+                    }, 2000);
+                }
+            }
+        }
+        
+        // Uncomment to enable typewriter effect
+        // setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
